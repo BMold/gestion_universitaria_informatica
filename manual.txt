@@ -1,0 +1,206 @@
+ANEXO B: MANUAL DE USUARIO DEL SISTEMA DE INFORMACIÓN
+
+El presente manual detalla la guía completa de uso de la plataforma web de gestión académica para la Facultad de Ciencias Puras y Naturales (FCPN - UMSA). La estructura está organizada según las vistas, permisos y funcionalidades asignadas a cada perfil de usuario en la base de datos.
+
+1. Acceso al Sistema y Autenticación
+El sistema cuenta con un control de acceso centralizado que valida las credenciales del usuario contra la base de datos MariaDB/MySQL mediante procedimientos almacenados de autenticación segura.
+
+Pasos para el ingreso:
+
+Verificación de Servicios Locales:
+- Asegúrese de que el servidor backend (Node.js/Express) se encuentre en ejecución sobre el puerto 3001 (http://localhost:3001).
+- Verifique que la aplicación cliente frontend (React/Vite) esté activa en el puerto 5173 (http://localhost:5173).
+
+Ingreso al Portal Web:
+- Abra un navegador web (Google Chrome, Mozilla Firefox, Microsoft Edge).
+- Ingrese a la URL del cliente frontend: http://localhost:5173.
+
+Inicio de Sesión:
+- En el formulario central, ingrese su Nombre de Usuario (ej. scallisaya, jmamaniq, lzeballosq); esta parte del sistema local tiene credenciales de autocompletado para probar el sistema.
+- Ingrese su Contraseña de acceso (contraseña inicial o temporal por defecto: 123456).
+- Haga clic en el botón ‘Ingresar’.
+
+Selección de Rol (Usuarios Multi-Rol):
+- En caso de contar con múltiples roles asignados en el sistema (ej. Docente y Director), el sistema desplegará un menú selector de rol activo.
+- Seleccione el rol con el que desea operar durante la sesión actual.
+
+Redirección Automática por Rol:
+- Al validar la autenticación contra el backend (http://localhost:3001/api), el sistema lo redireccionará a su Panel de Control (Dashboard) específico, habilitando de manera dinámica únicamente las pestañas y módulos autorizados para su perfil en la base de datos.
+
+[INSERTAR CAPTURA B.1: Formulario de Login e Inicio de Sesión]
+
+2. Módulo de Estudiantes
+El perfil de estudiante permite consultar el avance académico personal, verificar el cumplimiento de prerrequisitos, realizar la auto-inscripción a paralelos de la gestión activa y gestionar retiros de asignatura.
+
+2.1. Consulta de Inscripción, Oferta Académica e Historial Académico
+- En el menú de navegación lateral, seleccione la opción ‘Inscripciones’.
+- El sistema desplegará el listado cronológico de materias cursadas y en curso.
+- Se mostrará el resumen del estudiante:
+  * Nombres, Apellidos, Materias tomadas en la gestión.
+  * Promedio Ponderado Aprobado (calculado sobre materias con nota mayor o igual a 51 pts).
+- En la tabla de materias podrá revisar:
+  * Gestión Académica (ej. Invierno/2026, I/2026).
+  * Sigla y Nombre oficial de la Asignatura.
+  * Estado Académico:
+    - Aprobada.
+    - Reprobada.
+    - Cursando.
+    - Por Cursar.
+    - Corriente
+    - Técnico Superior
+    - Optativa
+
+[vista oferta académica]
+
+[Vista Historial Académico]
+
+2.2. Inscripción de Materias en Línea
+- En el menú lateral, diríjase a la sección [Inscripción en Línea].
+- El sistema validará la Gestión Académica Activa (ej. Invierno/2026).
+- En la sección "Mis materias inscritas en esta gestión", visualizará las materias actualmente registradas (máximo permitido: de 2 a 3 materias por gestión intensiva/regular).
+- En la sección "Materias disponibles para inscripción":
+  * El sistema analiza automáticamente el pensum del plan de estudios y el historial del alumno.
+  * Si cumple con los prerrequisitos, la materia aparecerá disponible en color azul.
+  * Si no cumple con los prerrequisitos, la asignatura aparecerá bloqueada con indicador de restricción.
+- Proceso de Inscripción:
+  * Haga clic sobre la materia disponible que desea inscribir.
+  * Se abrirá la ventana modal "Elegir Paralelo", donde se muestran los paralelos ofertados, el docente asignado, el aula, el horario y el cupo disponible.
+  * El sistema valida en tiempo real la inexistencia de choque de horarios con sus materias previas.
+  * Presione el botón [Inscribirme] en el paralelo de su preferencia.
+  * Tras la confirmación, la materia se agregará inmediatamente a su boleta de inscripción activa.
+
+[INSERTAR CAPTURA B.3: Formulario de Inscripción de Materias para Estudiantes]
+
+2.3. Retiro de Materia
+- En la vista [Inscripción en Línea], ubique la tabla "Mis materias inscritas en esta gestión".
+- Identifique la materia que desea dar de baja.
+- Presione el enlace o botón [Retirar].
+- El sistema procesará el retiro invocando el procedimiento almacenado correspondiente, liberando el cupo del paralelo de forma automática y actualizando la boleta académica.
+
+[INSERTAR CAPTURA B.4: Confirmación de Retiro de Materia del Estudiante]
+
+2.4. Visualización del Flujo de Malla Curricular
+- En la sección [Oferta Académica], presione el botón [Ver Flujo de Malla].
+- Se desplegará el diagrama gráfico interactivo del plan de estudios clasificado por semestres.
+- Cada materia mostrará su estado mediante códigos de color:
+  * Verde: Materia Aprobada.
+  * Amarillo: Materia Cursando.
+  * Azul: Materia Disponible para Cursar.
+  * Rojo / Gris: Materia Bloqueada por Prerrequisitos Faltantes.
+
+[INSERTAR CAPTURA B.5: Diagrama Modal del Flujo de Malla Curricular]
+
+3. Módulo de Docentes
+El módulo docente otorga herramientas para la postulación e impartición de asignaturas aperturadas, la definición flexible de criterios de evaluación y el asentamiento de notas.
+
+3.1. Solicitud y Postulación a Materias Disponibles
+- Ingrese a la sección [Oferta Académica].
+- Haga clic en la pestaña [Materias Dictadas].
+- Presione el botón [Tomar Materias (Libres)].
+- Se desplegará el catálogo de paralelos aperturados en la gestión activa que no cuentan con docente asignado.
+- Seleccione la materia de su especialidad y haga clic en [Solicitar Impartir].
+- El sistema registrará la asignación docente (respetando el límite de materias por gestión).
+
+[INSERTAR CAPTURA B.6: Modal de Selección y Asignación de Materias para Docentes]
+
+3.2. Configuración de Criterios de Evaluación
+- Acceda a la sección [Notas y Ponderaciones].
+- En el selector superior de asignaturas, elija el paralelo al cual desea definir la ponderación.
+- En la sección "Criterios de Evaluación", complete el formulario inferior:
+  * Nombre del Criterio: Ingrese la denominación (ej. Primer Parcial, Examen Final, Prácticas).
+  * Ponderación (%): Ingrese el porcentaje asignado sobre 100 puntos.
+  * Haga clic en [+ Agregar criterio].
+- Reglas de Validación:
+  * La suma acumulada de las ponderaciones de los criterios creados no puede superar el 100%.
+  * Puede editar o eliminar los criterios según las necesidades de la planificación.
+
+[INSERTAR CAPTURA B.7: Configuración de Criterios de Evaluación por el Docente]
+
+3.3. Registro y Llenado de Planilla de Calificaciones
+- En el mismo panel de [Notas y Ponderaciones], desplácese hasta la sección "Registro y llenado de planilla".
+- Aparecerá la matriz con la lista de estudiantes inscritos en el paralelo y columnas dedicadas a cada criterio de evaluación configurado.
+- Para calificar a un estudiante:
+  * Ubique al estudiante en la fila y haga clic en la celda del criterio a modificar.
+  * Ingrese el puntaje obtenido (el sistema controla automáticamente que la nota no exceda la ponderación máxima de dicho criterio).
+  * Presione la tecla Enter o haga clic en el botón de confirmación.
+  * El sistema recalcula en tiempo real la Nota Final Acumulada del estudiante y le asigna la insignia "Aprobado" (>= 51 pts) o "Reprobado" (< 51 pts).
+
+[INSERTAR CAPTURA B.8: Registro y Llenado de Planilla de Evaluaciones Docente]
+
+4. Módulo de Director de Carrera
+El perfil de Director de Carrera centraliza la planificación académica, la apertura de paralelos, la asignación de aulas y horarios sin choques, y el cierre de gestión académica.
+
+4.1. Apertura de Paralelos y Programación Académica
+- Diríjase a la sección [Planificación Académica] -> [Apertura de Paralelos].
+- Complete el formulario de apertura:
+  * Seleccione la Carrera, Plan de Estudios (Mención) y la Asignatura.
+  * Ingrese el identificador del Paralelo (ej. Paralelo A, B, C).
+  * Defina el Cupo Máximo de estudiantes.
+  * Seleccione al Docente Encargado.
+  * Elija el Aula física y el Bloque Horario de clases.
+- Haga clic en [Aperturar Paralelo Completo].
+- El sistema ejecutará las rutinas de validación en la base de datos. Si detecta cruce de horario del docente o sobreposición de aula, la transacción se cancelará notificando el motivo del conflicto.
+
+[INSERTAR CAPTURA B.9: Formulario de Apertura de Paralelos e Infraestructura]
+
+4.2. Asignación Masiva y Automatizada de Aulas y Horarios
+- En la vista de Planificación, haga clic en la pestaña [Asignación Masiva Automática].
+- Seleccione los parámetros de ejecución.
+- Presione el botón [Generar Horarios sin Choque].
+- El motor de la base de datos distribuirá automáticamente aulas y franjas horarias a todas las materias ofertadas evitando conflictos de espacio y horario.
+
+[INSERTAR CAPTURA B.10: Ejecución del Motor de Asignación de Horarios Automatizado]
+
+4.3. Previsualización y Cierre de Gestión Académica
+- Diríjase a la sección [Apertura y Cierre de Gestión].
+- El panel mostrará el Estado del Periodo Lectivo Activo (ej. Invierno/2026 - PERIODO ACTIVO).
+- Previsualización de Resultados:
+  * El sistema consulta y proyecta el rendimiento de todos los estudiantes inscritos en la gestión.
+  * Muestra las métricas consolidadas: Total Evaluados, Estudiantes Aprobados y Reprobados.
+- Exportación de Acta Oficial PDF:
+  * Haga clic en el botón [Exportar Acta Oficial (PDF)].
+  * Se generará la nómina completa en formato PDF oficial para respaldo institucional de la carrera.
+- Ejecución del Cierre Definitivo:
+  * Para concluir el semestre, haga clic en [Consolidar y Cerrar Gestión Académica].
+  * Al confirmar en la ventana modal, el sistema ejecutará el procedimiento almacenado definitivo asentando el historial académico final de todos los estudiantes y dejando habilitado el sistema para la apertura del siguiente periodo lectivo.
+
+[INSERTAR CAPTURA B.11: Panel de Cierre de Gestión Académica y Previsualización de Acta]
+
+5. Módulo de Administración de Usuarios y Reportes
+El perfil de Administración gestiona el alta y baja de cuentas de usuario del sistema, la supervisión global de la ventanilla de inscripciones y la emisión de reportes estadísticos.
+
+5.1. Registro de Personal y Estudiantes (Gestor de Usuarios)
+- En el menú de navegación, seleccione [Gestión de Usuarios].
+- Presione el botón [Nuevo Usuario].
+- Complete únicamente los datos personales básicos requeridos en el formulario:
+  * Nombres y Apellidos completos.
+  * Cédula de Identidad (CI).
+  * Fecha de Nacimiento y Sexo (M / F).
+  * Rol a Asignar en el Sistema (Administrador, Director, Docente, Estudiante).
+- Haga clic en el botón [Guardar Usuario].
+- Modal Automatizado de Credenciales:
+  * Al guardar, el backend invoca el procedimiento almacenado sp_insertar_persona_usuario.
+  * El procedimiento genera de forma autónoma el username estandarizado (ej. jmamaniq) y el correo institucional (@fcpn.edu.bo).
+  * Se desplegará en pantalla una ventana modal destacando las credenciales generadas y la contraseña temporal por defecto (123456), permitiendo copiar los accesos para entregarlos al usuario.
+
+[INSERTAR CAPTURA B.12: Modal de Confirmación con Credenciales Generadas (UsersPage.jsx)]
+
+5.2. Supervisión y Excepciones de Inscripción Administrativa
+- Ingrese al módulo [Ventanilla de Inscripción] (Vista Administrador / Director).
+- Utilice el buscador para filtrar estudiantes por Nombre, Apellidos o Registro Universitario (RU).
+- Seleccione la Gestión Académica deseada en el selector desplegable (o elija "Ver Todas las Gestiones").
+- El sistema listará a todos los estudiantes registrados junto con sus asignaturas cursadas, estado y calificaciones proyectadas, permitiendo gestionar inscripciones o retiros especiales de forma directa.
+
+[INSERTAR CAPTURA B.13: Ventanilla Administrativa de Inscripciones y Excepciones]
+
+5.3. Módulo de Reportes e Indicadores Estadísticos
+- En el menú principal, ingrese a la sección [Reportes e Indicadores].
+- El panel mostrará las métricas institucionales de la carrera:
+  * Tarjetas Estadísticas: Total Estudiantes, Docentes Activos, Carrera Activa y % Aprobación.
+  * Gráfico de Rendimiento Académico por Asignatura: Barras interactivas de Aprobados, Reprobados y En Curso.
+  * Tabla de Carga Horaria Docente: Docentes, Grado Académico, Paralelos y Estudiantes a Cargo.
+- Exportación Consolidada a PDF:
+  * Haga clic en el botón superior [Exportar Información en PDF].
+  * El sistema generará el informe estadístico ejecutivo completo en PDF (reporte_estadisticas.pdf), incluyendo el desglose por asignatura, índices de aprobación y distribución de la carga docente.
+
+[INSERTAR CAPTURA B.14: Panel de Reportes Estadísticos e Indicadores Institucionales]
